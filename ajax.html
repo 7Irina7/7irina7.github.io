@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Katzenrasse Info Wiki</title>
+    <link rel="stylesheet" href="./css/style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <nav>
+    <ul>
+      <li><a href="./index.html">Home</a></li>
+      <li><a href="./ajax.html">Info (Ajax)</a></li>
+      <li><a href="#">Fotos</a></li>
+      <li><a href="#">Kontakt</a></li>
+    </ul>
+  </nav>
+  <div>/n</div>
+    <div class="info">
+      <h1>Welche Katzenrassen gibt es? </h1>
+      <section id="game-selector">
+        <span>Über welche Katzenrasse möchtest du lesen? </span>
+        <select>
+          <option value="" disabled selected>Bitte auswählen...</option>
+          <option value="MaineCoon.json">Maine Coon</option>
+          <option value="bengal.json">Bengalkatze</option>
+          <option value="siamkatze.json">Siamkatze</option>
+        </select>
+      </section>
+      <section id="game-panel">
+        <h2 class="title">Keine Katzenrasse ausgewählt.</h2>
+        <a class="ref" target="_blank" href="#">
+          <span class="label"></span>
+        </a>
+        <p class="description"></p>
+      </section>
+    </div>
+    
+    <script>
+      "use strict"; // ältere JavaScript Systax verbieten
+
+      // select-Element zur Spielauswahl im DOM finden
+      var gameSelector = document.querySelector("#game-selector select");
+
+      // Auf Änderungen des select-Elements reagieren
+      gameSelector.addEventListener("change", function(event) {
+        // Referenz auf select-Elements
+        var select = this;
+        // Ausgewählten Wert auslesen
+        var gameFileName = select.value;
+
+        // Informationen zum Spiel per AJAX laden.
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+          if (this.readyState == 4 && this.status == 200) {
+
+            // Inhalt der Daten von JSON in JavaScript-Objekt wandeln
+            var gameData = JSON.parse(this.responseText);
+
+            // Anzeige für das Spiel mit geladeden Daten aktualisieren
+            updateGamePanel(gameData);
+
+          }
+        };
+        xhttp.open("GET", "./" + gameFileName, true);
+        xhttp.send();
+      });
+
+      var updateGamePanel = function(gameData) {
+
+        // Anzeigebereich für Spielinformationen im DOM finden
+        var gamePanel = document.querySelector("#game-panel");
+
+        // Titel setzen
+        var title = gamePanel.querySelector(".title");
+        title.innerHTML = gameData.title;
+
+        // Quellenangabe setzen
+        var ref = gamePanel.querySelector(".ref");
+        var label = ref.querySelector(".label");
+        ref.href = gameData.ref;
+        label.innerHTML = gameData.ref;
+
+        // Beschreibung setzten
+        var description = gamePanel.querySelector(".description");
+        description.innerHTML = gameData.description;
+      }
+
+    </script>
+
+
+  </body>
+</html>
